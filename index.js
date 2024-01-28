@@ -5933,23 +5933,63 @@ var saved = {
       }
     }
 };
-function insert(Name,Klas,Link,Id,Pin,Year){
-    var add = `
-    <tr class="box">
-        <td>`+Year+`</td>
-        <td>`+Klas+`</td>
-        <td>`+Name+` ID:`+Id+` PIN:`+Pin+` <a href="`+Link+`">OPEN</a></td>
-    </tr>`
-    console.log(add)
-    document.getElementById('main1').insertAdjacentHTML('beforeend',add)
-}
 for (const Year in saved) {
     const x = saved[Year];
+    const YearBox = document.createElement('div')
+    YearBox.className = 'mbox'
+    const hideklassen = []
+    const Yearbutton = document.createElement('button')
+    Yearbutton.innerHTML = `> `+Year
+    Yearbutton.onclick = ()=>{
+      for (let i = 0; i < hideklassen.length; i++) {
+        const klas = hideklassen[i];
+        klas.hidden = !klas.hidden
+      }
+    }
+    YearBox.appendChild(Yearbutton)
+    document.getElementById('hold all').appendChild(YearBox)
     for (const Klas in x) {
         const students = x[Klas];
-        for (const data in students) {
-            const info = students[data];
-            insert(data,Klas,info.StudentPage,info.StudentId,info.StudentPin,Year)
+        const KlasBox = document.createElement('div')
+        KlasBox.className = 'box'
+        KlasBox.hidden = true
+        hideklassen.push(KlasBox)
+        const hidestudents = []
+        const Klasbutton = document.createElement('button')
+        Klasbutton.innerHTML = `> `+Klas
+        Klasbutton.onclick = ()=>{
+          for (let i = 0; i < hidestudents.length; i++) {
+            const student = hidestudents[i];
+            student.hidden = !student.hidden
+          }
+        }
+        KlasBox.appendChild(Klasbutton)
+        YearBox.appendChild(KlasBox)
+        for (const Name in students) {
+            const info = students[Name];
+            const StudentBox = document.createElement('div')
+            StudentBox.className = 'box'
+            StudentBox.hidden = true
+            hidestudents.push(StudentBox)
+            const StudentInfo = document.createElement('div')
+            StudentInfo.className = 'box'
+            StudentInfo.hidden = true
+            StudentInfo.innerText = `StudentId : `+info.StudentId+`\nStudentPin : `+info.StudentPin
+            const Studentbutton = document.createElement('button')
+            Studentbutton.innerHTML = `> `+Name+'  '
+            Studentbutton.onclick = ()=>{
+              StudentInfo.hidden = !StudentInfo.hidden
+            }
+            const link = document.createElement('a')
+            link.href = info.StudentPage
+            link.target = '_blank'
+            link.text = 'Open-Page'
+            Studentbutton.appendChild(link)
+            StudentBox.appendChild(Studentbutton)
+            StudentBox.appendChild(StudentInfo)
+            KlasBox.appendChild(StudentBox)
+            //insert(Name,Klas,info.StudentPage,info.StudentId,info.StudentPin,Year)
+            //console.log(Name,Klas,info.StudentPage,info.StudentId,info.StudentPin,Year)
         }
     }
 }
